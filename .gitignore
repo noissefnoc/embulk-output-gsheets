@@ -1,0 +1,9 @@
+*~
+/pkg/
+/tmp/
+/.bundle/
+/Gemfile.lock
+.idea/*
+client_secret.json
+examples/*
+test.rb
