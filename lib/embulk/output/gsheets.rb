@@ -21,7 +21,16 @@ module Embulk
           'credential_path' => config.param('credential_path', :string, default: credential_default_path),
           'application_name' => config.param('application_name', :string, default: 'embulk-output-gsheets'),
           'bulk_num' => config.param('bulk_num', :integer, default: 200),
+          'with_header' => config.param('with_header', :bool, default: true),
         }
+
+        service = Service.new(task)
+        header = service.get_header
+
+        if task['with_header'] && header.nil?
+          header_record = schema.map { |s| s['name'] }
+          service.write([header_record])
+        end
 
         task_reports = yield(task)
         next_config_diff = {}

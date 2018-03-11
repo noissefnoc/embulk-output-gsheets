@@ -18,6 +18,7 @@ Dump records to [Google Sheets](https://sheets.google.com/).
 - **credential_path**: Path to credential file (string, default: `~/.credentials/embulk-output-gsheets.yml`)
 - **application_name**: Application name pass to Google (string, default: `embulk-output-gsheets`)
 - **bulk_num**: Bulk write number of records (integer, default: 200) 
+- **with_header**: Write header line (bool, default: true)
 
 
 ## Example
