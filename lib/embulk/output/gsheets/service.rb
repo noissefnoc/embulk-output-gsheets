@@ -10,6 +10,7 @@ module Embulk
       class Service
         OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'
         SCOPE = Google::Apis::SheetsV4::AUTH_SPREADSHEETS
+        DEFALUT_START_RANGE = 'A1:A1'
 
         def initialize(task)
           @spreadsheet_id = task['spreadsheet_id']
@@ -30,10 +31,13 @@ module Embulk
 
           client_id = Google::Auth::ClientId.from_file(@client_secrets_path)
           token_store = Google::Auth::Stores::FileTokenStore.new(file: @credential_path)
-          authorizer = Google::Auth::UserAuthorizer.new(
-              client_id, SCOPE, token_store)
+          authorizer = Google::Auth::UserAuthorizer.new(client_id, SCOPE, token_store)
           user_id = 'default'
+
+          # read credentials from local cached file
           credentials = authorizer.get_credentials(user_id)
+
+          # get credentials from api request
           if credentials.nil?
             url = authorizer.get_authorization_url(
                 base_url: OOB_URI)
@@ -48,9 +52,22 @@ module Embulk
         end
 
         def write(bulk_record)
-          range = @sheet_name + '!A2:B2'
+          range = @sheet_name + '!' + DEFALUT_START_RANGE
           value_range_object = Google::Apis::SheetsV4::ValueRange.new(values: bulk_record)
-          response = @service.append_spreadsheet_value(@spreadsheet_id, range, value_range_object, value_input_option: 'RAW')
+
+
+          response = @service.append_spreadsheet_value(
+              @spreadsheet_id, range, value_range_object, value_input_option: 'RAW')
+        end
+
+        def get_values(range)
+          response = @service.get_spreadsheet_values(@spreadsheet_id, range)
+        end
+
+        def get_header
+          range = @sheet_name + '!' + DEFALUT_START_RANGE
+          response = @service.get_spreadsheet_values(@spreadsheet_id, range)
+          response.values
         end
       end
     end
