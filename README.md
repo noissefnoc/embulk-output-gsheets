@@ -2,7 +2,7 @@
 
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)][license]
 
-[release]: https://github.com/tcnksm/ghr/releases
+[license]: https://github.com/noissefnoc/embulk-output-gsheets/blob/master/LICENSE.txt
 
 **WARNING: THIS IS VERY ALPHA VERSION. API OR CONFIGURATION COULD CHANGE.**
 
