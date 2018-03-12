@@ -8,9 +8,9 @@ module Embulk
   module Output
     class Gsheets < OutputPlugin
       class Service
-        OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'
+        OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'.freeze
         SCOPE = Google::Apis::SheetsV4::AUTH_SPREADSHEETS
-        DEFALUT_START_RANGE = 'A1:A1'
+        DEFAULT_START_RANGE = 'A1:A1'.freeze
 
         def initialize(task)
           @spreadsheet_id = task['spreadsheet_id']
@@ -39,35 +39,62 @@ module Embulk
 
           # get credentials from api request
           if credentials.nil?
-            url = authorizer.get_authorization_url(
-                base_url: OOB_URI)
+            begin
+              url = authorizer.get_authorization_url(base_url: OOB_URI)
+            rescue => e
+              # TODO: more appropriate error handling
+              raise "Could not get auth URL from Google #{e.message}" +
+                        "client_secrets = #{@client_secrets_path}"
+            end
+            # diaplay authentication url
             puts 'Open the following URL in the browser and enter the ' +
                      'resulting code after authorization'
             puts url
+            # wait for user input
             code = gets
-            credentials = authorizer.get_and_store_credentials_from_code(
-                user_id: user_id, code: code, base_url: OOB_URI)
+            begin
+              credentials = authorizer.get_and_store_credentials_from_code(
+                  user_id: user_id, code: code, base_url: OOB_URI)
+            rescue => e
+              # TODO: more appropriate error handling
+              raise "Could not get auth URL from Google #{e.message}" +
+                        "client_secrets = #{@client_secrets_path}"
+            end
           end
           credentials
         end
 
         def write(bulk_record)
-          range = @sheet_name + '!' + DEFALUT_START_RANGE
+          range = @sheet_name + '!' + DEFAULT_START_RANGE
           value_range_object = Google::Apis::SheetsV4::ValueRange.new(values: bulk_record)
-
-
-          response = @service.append_spreadsheet_value(
-              @spreadsheet_id, range, value_range_object, value_input_option: 'RAW')
+          begin
+            # TODO: check response if write values correctly
+            response = @service.append_spreadsheet_value(
+                @spreadsheet_id, range, value_range_object, value_input_option: 'RAW')
+          rescue => e
+            # TODO: more appropriate error handling
+            raise "Could not write values to Google Sheets #{e.message}" +
+                      "spreadsheet_id = #{@spreadsheet_id}, range = #{range}"
+          end
         end
 
         def get_values(range)
-          response = @service.get_spreadsheet_values(@spreadsheet_id, range)
+          values = nil
+          begin
+            response = @service.get_spreadsheet_values(@spreadsheet_id, range)
+            values = response.values
+          rescue => e
+            # TODO: more appropriate error handling
+            raise "Could not get values from Google Sheets #{e.message}" +
+                "spreadsheet_id = #{@spreadsheet_id}, range = #{range}"
+          end
+          values
         end
 
         def get_header
-          range = @sheet_name + '!' + DEFALUT_START_RANGE
-          response = @service.get_spreadsheet_values(@spreadsheet_id, range)
-          response.values
+          range = @sheet_name + '!' + DEFAULT_START_RANGE
+          header = get_values(range)
+          header
         end
       end
     end
