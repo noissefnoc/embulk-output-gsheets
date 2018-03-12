@@ -2,6 +2,8 @@
 
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)][license]
 
+[release]: https://github.com/tcnksm/ghr/releases
+
 **WARNING: THIS IS VERY ALPHA VERSION. API OR CONFIGURATION COULD CHANGE.**
 
 Dump records to [Google Sheets](https://sheets.google.com/).
