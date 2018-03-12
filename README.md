@@ -104,7 +104,7 @@ $ embulk gem install pkg/embulk-output-gsheets-0.1.0.gem
 |Mode|append|append(*1)|
 |Bulk write|No(*2)|yes(*3)|
 
-* 1: intent to imprement `truncate` and `replace` mode
+* 1: intent to implement `truncate` and `replace` mode
 * 2: write once per record
 * 3: write once per `bulk_num` option (default: 200)
 
