@@ -24,6 +24,9 @@ module Embulk
           'with_header' => config.param('with_header', :bool, default: true),
         }
 
+        Embulk.logger.info "Writing google sheets: " +
+                               "spreadsheet id = [#{task['spreadsheet_id']}], sheet name = [#{task['sheet_name']}]"
+
         service = Service.new(task)
         header = service.get_header
 
@@ -51,11 +54,11 @@ module Embulk
       end
 
       def close
+        # nothing to do
       end
 
       def add(page)
         page.each do |record|
-          #hash = Hash[schema.names.zip(record)]
           @bulk_record << record
           if @bulk_num <= @bulk_record.size
             @service.write(@bulk_record)
@@ -71,6 +74,7 @@ module Embulk
       end
 
       def abort
+        # nothing to do
       end
 
       def commit
