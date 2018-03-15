@@ -39,6 +39,10 @@ out:
 
 ## Authentication
 
+### Turn on API
+
+First, create API project from [Google API Console](https://console.developers.google.com/) if haven't create it. And then turn on Google Sheets API.
+
 ### Prepare client secret JSON
 
 [OAuth 2](https://developers.google.com/accounts/docs/OAuth2) is used to authorize this application. This library uses [Google API Ruby Client](https://github.com/google/google-api-ruby-client) for authentication and handling Google sheets.
@@ -67,9 +71,11 @@ OAuth authorization requires when you run `embulk-output-gsheets` at first time.
 1. Copy and paste OAuth token to console and hit enter key
 
 
-### Utilitie
+### Utility
 
-I'm writing utilitie that provides 'Get OAuth token from browser' section feature by Golang now. It can help preparing OAuth credentials file on multi-platforms.
+I wrote utility that provides 'Get OAuth token from browser' section feature by Golang now. It can help preparing OAuth credentials file on multi-platforms.
+
+* [noissefnoc/ggoc](https://github.com/noissefnoc/ggoc)
 
 
 ## Install
