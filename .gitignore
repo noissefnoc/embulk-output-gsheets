@@ -7,3 +7,4 @@
 client_secret.json
 examples/*
 test.rb
+.DS_Store
