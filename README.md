@@ -20,6 +20,7 @@ Dump records to [Google Sheets](https://sheets.google.com/).
 - **spreadsheet_id**: Google Sheets' ID (string, required)
     - if sheets url is `https://docs.google.com/spreadsheets/d/hoge/edit#gid=0` then `spreadsheet_id` is `hoge` ) 
 - **sheet_name**: Sheet Name (string, required)
+    - if sheet does not exist then create new sheet named `sheet_name`
 - **client_secrets_path**: Path to client_secrets.json (string, required)
 - **credential_path**: Path to credential file (string, default: `~/.credentials/embulk-output-gsheets.yml`)
 - **application_name**: Application name pass to Google (string, default: `embulk-output-gsheets`)
