@@ -96,6 +96,18 @@ module Embulk
           header = get_values(range)
           header
         end
+
+        def clear
+          begin
+            response = @service.batch_clear_values(
+              @spreadsheet_id,
+              Google::Apis::SheetsV4::BatchClearValuesRequest.new)
+          rescue => e
+            # TODO: more appropriate error handling
+            raise "Could not clear values from Google Sheets #{e.message}" +
+                      "spreadsheet_id = #{@spreadsheet_id}"
+          end
+        end
       end
     end
   end
