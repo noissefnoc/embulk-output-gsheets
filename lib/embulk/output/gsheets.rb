@@ -22,9 +22,10 @@ module Embulk
           'application_name' => config.param('application_name', :string, default: 'embulk-output-gsheets'),
           'bulk_num' => config.param('bulk_num', :integer, default: 200),
           'with_header' => config.param('with_header', :bool, default: true),
+          'mode' => config.param('mode', :string, default: 'append'),
         }
 
-        Embulk.logger.info "Writing google sheets: " +
+        Embulk.logger.info 'Writing google sheets: ' +
                                "spreadsheet id = [#{task['spreadsheet_id']}], sheet name = [#{task['sheet_name']}]"
 
         service = Service.new(task)
@@ -33,6 +34,15 @@ module Embulk
         if task['with_header'] && header.nil?
           header_record = schema.map { |s| s['name'] }
           service.write([header_record])
+        end
+
+        case task['mode']
+        when 'truncate'
+          service.clear
+        when 'append'
+          # nothing to do
+        else
+          raise ConfigError.new "Invalid write mode detected. mode = #{task['mode']}"
         end
 
         task_reports = yield(task)
