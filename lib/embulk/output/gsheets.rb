@@ -1,4 +1,5 @@
 require_relative 'gsheets/service'
+require_relative 'gsheets/auth'
 
 require 'fileutils'
 
@@ -9,16 +10,11 @@ module Embulk
       Plugin.register_output("gsheets", self)
 
       def self.transaction(config, schema, count, &control)
-        credential_default_path = File.join(
-            Dir.home,
-            '.credentials',
-            'embulk-output-gsheets.yml')
-
         task = {
           'spreadsheet_id' => config.param('spreadsheet_id', :string),
           'sheet_name' => config.param('sheet_name', :string),
           'client_secrets_path' => config.param('client_secrets_path', :string),
-          'credential_path' => config.param('credential_path', :string, default: credential_default_path),
+          'credential_path' => config.param('credential_path', :string, default: Auth::default_credentials_path),
           'application_name' => config.param('application_name', :string, default: 'embulk-output-gsheets'),
           'bulk_num' => config.param('bulk_num', :integer, default: 200),
           'with_header' => config.param('with_header', :bool, default: true),
