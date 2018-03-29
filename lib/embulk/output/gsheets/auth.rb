@@ -6,15 +6,15 @@ module Embulk
     class Gsheets < OutputPlugin
       class Auth
         def initialize(task)
-          @credential_path = task['credential_path']
+          @credentials_path = task['credentials_path']
           @client_secrets_path = task['client_secrets_path']
         end
 
         def authorize
-          FileUtils.mkdir_p(File.dirname(@credential_path))
+          FileUtils.mkdir_p(File.dirname(@credentials_path))
 
           client_id = Google::Auth::ClientId.from_file(@client_secrets_path)
-          token_store = Google::Auth::Stores::FileTokenStore.new(file: @credential_path)
+          token_store = Google::Auth::Stores::FileTokenStore.new(file: @credentials_path)
           authorizer = Google::Auth::UserAuthorizer.new(client_id, scope, token_store)
           user_id = 'default'
 
