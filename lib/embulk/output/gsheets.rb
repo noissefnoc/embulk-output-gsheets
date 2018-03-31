@@ -5,23 +5,27 @@ require 'fileutils'
 
 module Embulk
   module Output
-
     class Gsheets < OutputPlugin
-      Plugin.register_output("gsheets", self)
+      Plugin.register_output('gsheets', self)
 
-      def self.transaction(config, schema, count, &control)
+      def self.transaction(config, schema, _count)
         task = {
           'spreadsheet_id' => config.param('spreadsheet_id', :string),
           'sheet_name' => config.param('sheet_name', :string),
           'client_secrets_path' => config.param('client_secrets_path', :string),
-          'credentials_path' => config.param('credentials_path', :string, default: Auth::default_credentials_path),
-          'application_name' => config.param('application_name', :string, default: 'embulk-output-gsheets'),
+          'credentials_path' => config.param(
+            'credentials_path', :string, default: Auth.default_credentials_path
+          ),
+          'application_name' => config.param(
+            'application_name', :string, default: 'embulk-output-gsheets'
+          ),
           'bulk_num' => config.param('bulk_num', :integer, default: 200),
-          'with_header' => config.param('with_header', :bool, default: true),
+          'with_header' => config.param('with_header', :bool, default: true)
         }
 
-        Embulk.logger.info "Writing google sheets: " +
-                               "spreadsheet id = [#{task['spreadsheet_id']}], sheet name = [#{task['sheet_name']}]"
+        Embulk.logger.info 'Writing google sheets: ' +
+                           "spreadsheet id = [#{task['spreadsheet_id']}], " +
+                           "sheet name = [#{task['sheet_name']}]"
 
         service = Service.new(task)
         header = service.get_header
@@ -33,7 +37,7 @@ module Embulk
 
         task_reports = yield(task)
         next_config_diff = {}
-        return next_config_diff
+        next_config_diff
       end
 
       # def self.resume(task, schema, count, &control)
@@ -64,9 +68,7 @@ module Embulk
       end
 
       def finish
-        if @bulk_record.size > 0
-          @service.write(@bulk_record)
-        end
+        @service.write(@bulk_record) unless @bulk_record.empty?
       end
 
       def abort
@@ -75,7 +77,7 @@ module Embulk
 
       def commit
         task_report = {}
-        return task_report
+        task_report
       end
     end
   end

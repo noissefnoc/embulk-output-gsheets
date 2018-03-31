@@ -24,15 +24,19 @@ module Embulk
 
         def write(bulk_record)
           range = @sheet_name + '!' + default_start_range
-          value_range_object = Google::Apis::SheetsV4::ValueRange.new(values: bulk_record)
+          value_range_object =
+            Google::Apis::SheetsV4::ValueRange.new(values: bulk_record)
           begin
             # TODO: check response if write values correctly
             @service.append_spreadsheet_value(
-                @spreadsheet_id, range, value_range_object, value_input_option: 'RAW')
+              @spreadsheet_id,
+              range,
+              value_range_object,
+              value_input_option: 'RAW')
           rescue => e
             # TODO: more appropriate error handling
             raise "Could not write values to Google Sheets #{e.message}" +
-                      "spreadsheet_id = #{@spreadsheet_id}, range = #{range}"
+                  "spreadsheet_id = #{@spreadsheet_id}, range = #{range}"
           end
         end
 
@@ -44,7 +48,7 @@ module Embulk
           rescue => e
             # TODO: more appropriate error handling
             raise "Could not get values from Google Sheets #{e.message}" +
-                "spreadsheet_id = #{@spreadsheet_id}, range = #{range}"
+                  "spreadsheet_id = #{@spreadsheet_id}, range = #{range}"
           end
           values
         end

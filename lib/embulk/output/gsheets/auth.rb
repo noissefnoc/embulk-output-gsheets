@@ -28,21 +28,22 @@ module Embulk
             rescue => e
               # TODO: more appropriate error handling
               raise "Could not get auth URL from Google #{e.message}" +
-                        "client_secrets = #{@client_secrets_path}"
+                    "client_secrets = #{@client_secrets_path}"
             end
-            # diaplay authentication url
+            # display authentication url
             puts 'Open the following URL in the browser and enter the ' +
-                     'resulting code after authorization'
+                 'resulting code after authorization'
             puts url
             # wait for user input
             code = gets
             begin
               credentials = authorizer.get_and_store_credentials_from_code(
-                  user_id: user_id, code: code, base_url: oob_uri)
+                user_id: user_id, code: code, base_url: oob_uri
+              )
             rescue => e
               # TODO: more appropriate error handling
               raise "Could not get auth URL from Google #{e.message}" +
-                        "client_secrets = #{@client_secrets_path}"
+                    "client_secrets = #{@client_secrets_path}"
             end
           end
           credentials
